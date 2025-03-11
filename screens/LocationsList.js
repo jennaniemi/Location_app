@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const MapViewScreen = () => {
+const LocationsList = () => {
   return (
     <View>
-      <Text>Map view screen</Text>
+      <Text>Locations list Screen</Text>
     </View>
   );
 };
 
-export default MapViewScreen;
+export default LocationsList;
