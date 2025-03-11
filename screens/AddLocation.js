@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 const AddLocation = () => {
   return (
     <View>
-      <Text>Add location Screen</Text>
+      <Text>Add location screen</Text>
     </View>
   );
 };

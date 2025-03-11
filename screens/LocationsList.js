@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 const LocationsList = () => {
   return (
     <View>
-      <Text>Locations list Screen</Text>
+      <Text>Locations list screen</Text>
     </View>
   );
 };
