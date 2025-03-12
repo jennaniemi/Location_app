@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
+import { useFocusEffect } from "@react-navigation/native";
 import { db } from "../firebaseConfig";
 
 export default function LocationsList({ navigation }) {
   const [locations, setLocations] = useState([]);
 
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "locations"));
-        setLocations(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-      } catch (error) {
-        console.error("Error fetching locations: ", error);
-      }
-    };
+  const fetchLocations = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "locations"));
+      setLocations(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      console.error("Error fetching locations: ", error);
+    }
+  };
 
-    fetchLocations();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchLocations();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
