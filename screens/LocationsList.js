@@ -23,6 +23,12 @@ export default function LocationsList({ navigation }) {
     }, [])
   );
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <Button title="Add New Location" onPress={() => navigation.navigate("AddLocation")} />
