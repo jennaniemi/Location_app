@@ -1,60 +1,83 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Dimensions, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import Geocoder from "react-native-geocoding";
+import * as Location from 'expo-location';
 
-Geocoder.init("AIzaSyBzbJO-lwlJiSJq7RHuO8duzS9Q_3PIjyo");
+const INITIAL_LATITUDE = 65.0800;
+const INITIAL_LONGITUDE = 65.4800;
+const INITIAL_LATITUDE_DELTA = 0.0922;
+const INITIAL_LONGITUDE_DELTA = 0.0421;
 
-export default function MapViewScreen({ route }) {
-  const { location } = route.params;
-  const [coordinates, setCoordinates] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function App() {
+  const [latitude, setLatitude] = useState(INITIAL_LATITUDE);
+  const [longitude, setLongitude] = useState(INITIAL_LONGITUDE);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (location?.name) {
-      Geocoder.from(location.name)
-        .then(response => {
-          const { lat, lng } = response.results[0].geometry.location;
-          setCoordinates({ latitude: lat, longitude: lng });
-        })
-        .catch(error => console.error("Geocoding error:", error))
-        .finally(() => setLoading(false));
-    }
-  }, [location]);
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      try {
+        if (status !== 'granted') {
+          setIsLoading(false);
+          alert("Geolocation Failed");
+          return;
+        }
 
-  if (loading) {
+        const location = await Location.getLastKnownPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        if (location) {
+          setLatitude(location.coords.latitude);
+          setLongitude(location.coords.longitude);
+        } else {
+          alert("Unable to fetch the location.");
+        }
+        setIsLoading(false);
+      } catch (error) {
+        alert(error);
+        setIsLoading(false);
+      }
+    })();
+  }, []);
+
+  if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading map...</Text>
+      <View style={styles.container}>
+        <Text>Retrieving Location...</Text>
       </View>
     );
-  }
-
-  return (
-    <View style={styles.container}>
-      {coordinates ? (
+  } else {
+    return (
+      <View style={styles.container}>
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: INITIAL_LATITUDE_DELTA,
+            longitudeDelta: INITIAL_LONGITUDE_DELTA,
           }}
+          showsUserLocation={true}
         >
-          <Marker coordinate={coordinates} title={location.name} description={location.description} />
+          <Marker
+            title="Current Location"
+            coordinate={{ latitude: latitude, longitude: longitude }}
+          />
         </MapView>
-      ) : (
-        <Text style={styles.errorText}>Location not found</Text>
-      )}
-    </View>
-  );
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  errorText: { textAlign: "center", marginTop: 20, fontSize: 18, color: "red" },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
 });
