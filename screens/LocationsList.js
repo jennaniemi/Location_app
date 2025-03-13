@@ -58,14 +58,14 @@ export default function LocationsList({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { flex: 1, padding: 20, backgroundColor: "#333", },
   locationItem: { 
     flexDirection: "row", 
     alignItems: "center", 
     justifyContent: "space-between", 
     padding: 15, 
     marginVertical: 10, 
-    backgroundColor: "#ddd", 
+    backgroundColor: "#6a6a6a", 
     borderRadius: 10 
   },
   textContainer: { flex: 1 },

@@ -11,10 +11,22 @@ const Stack = createStackNavigator();
 export default function AppNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LocationsList">
-        <Stack.Screen name="LocationsList" component={LocationsList} />
-        <Stack.Screen name="AddLocation" component={AddLocation} />
-        <Stack.Screen name="MapViewScreen" component={MapViewScreen} />
+      <Stack.Navigator initialRouteName="LocationsList" screenOptions={{
+          headerStyle: { backgroundColor: "#222" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
+        }}>
+        <Stack.Screen name="LocationsList"
+        component={LocationsList}
+        options={{ title: "Locations"}}
+        />
+        <Stack.Screen name="AddLocation"
+        component={AddLocation}
+        options={{ title: "Add Location"}}
+        />
+        <Stack.Screen name="MapViewScreen"
+        component={MapViewScreen}
+        options={{ title: "The Map"}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
