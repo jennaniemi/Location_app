@@ -3,6 +3,7 @@ import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
+// Default map location (if GPS is unavailable)
 const INITIAL_LATITUDE = 65.0800;
 const INITIAL_LONGITUDE = 65.4800;
 const INITIAL_LATITUDE_DELTA = 0.0922;
@@ -17,12 +18,14 @@ export default function MapScreen({ route }) {
 
   useEffect(() => {
     (async () => {
+      // Request user's location permissions
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         alert("Permission to access location was denied");
         return;
       }
 
+       // Get user's last known location
       const locationData = await Location.getLastKnownPositionAsync({
         accuracy: Location.Accuracy.High,
       });
@@ -58,6 +61,7 @@ export default function MapScreen({ route }) {
         }}
         showsUserLocation={true}
       >
+         {/* If the location has coordinates, place a marker on the map */}
         {location && location.coordinates && (
           <Marker
             title={location.name}
@@ -73,6 +77,7 @@ export default function MapScreen({ route }) {
   );
 }
 
+// Styling
 const styles = StyleSheet.create({
   container: {
     flex: 1,

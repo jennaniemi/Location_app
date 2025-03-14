@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert, Text, Image } from "react-native";
-import { Rating } from "react-native-ratings";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { Rating } from "react-native-ratings"; // Star rating component
+import { collection, addDoc } from "firebase/firestore"; // Firestore
+import { db } from "../firebaseConfig"; // Firebase config
 
 export default function AddLocation({ navigation }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState(1);
 
+  // Error message that pops up if you don't fill out all the text inputs and/or give a rating
   const handleAddLocation = async () => {
     if (!name || !description || rating === 0) {
       return Alert.alert("Error", "Please fill all fields and give a rating :)");
     }
 
+       // Save new location to Firestore
     try {
       await addDoc(collection(db, "locations"), {
         name,
@@ -21,6 +23,7 @@ export default function AddLocation({ navigation }) {
         rating,
       });
 
+       // Show success alert and return to LocationsList screen
       Alert.alert(
         "Success",
         "Location Added!",
@@ -42,6 +45,7 @@ export default function AddLocation({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Input fields for location name and description */}
       <TextInput
         placeholder="Name"
         placeholderTextColor="gray"
@@ -58,6 +62,7 @@ export default function AddLocation({ navigation }) {
       />
 
       <Text style={styles.label}>Rating:</Text>
+       {/* Star rating component */}
       <Rating
         type="star"
         ratingCount={5}
@@ -76,6 +81,7 @@ export default function AddLocation({ navigation }) {
 
 
       <View style={styles.imageContainer}>
+           {/* Display an image */}
         <Image
           source={require('../assets/images/Corporation Cats.jpg')}
           style={styles.image}
@@ -85,6 +91,7 @@ export default function AddLocation({ navigation }) {
   );
 }
 
+// Styling
 const styles = StyleSheet.create({
   container: {
     flex: 1,

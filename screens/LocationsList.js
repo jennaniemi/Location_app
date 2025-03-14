@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
-import { useFocusEffect } from "@react-navigation/native";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { db } from "../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore"; // Firebase Firestore
+import { useFocusEffect } from "@react-navigation/native"; // Detects when screen is focused
+import { FontAwesome5 } from "@expo/vector-icons"; //Icon map for marker
+import { db } from "../firebaseConfig"; // Firebase config
 
 export default function LocationsList({ navigation }) {
   const [locations, setLocations] = useState([]);
 
+    // Function to fetch locations from Firestore
   const fetchLocations = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "locations"));
@@ -17,12 +18,14 @@ export default function LocationsList({ navigation }) {
     }
   };
 
+   // Refresh the list when the screen is focused
   useFocusEffect(
     useCallback(() => {
       fetchLocations();
     }, [])
   );
 
+   // Remove the default back button from the header
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
@@ -31,8 +34,10 @@ export default function LocationsList({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Button to navigate to the Add Location screen */}
       <Button title="Add New Location" onPress={() => navigation.navigate("AddLocation")} />
       
+       {/* Navigate to MapViewScreen when marker icon is pressed */}
       <FlatList
         data={locations}
         keyExtractor={(item) => item.id}
@@ -44,6 +49,7 @@ export default function LocationsList({ navigation }) {
               <Text>⭐ {item.rating} Stars</Text>
             </View>
 
+             {/* Navigate to MapViewScreen when marker icon is pressed */}
             <TouchableOpacity
               onPress={() => navigation.navigate("MapViewScreen", { location: item })}
               style={styles.pinButton}
@@ -57,6 +63,7 @@ export default function LocationsList({ navigation }) {
   );
 }
 
+// Styling
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#333", },
   locationItem: { 
